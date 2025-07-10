@@ -1,11 +1,9 @@
 document.getElementById("passwordLength").oninput = function() {
   document.getElementById("length").value = this.value;
-  document.getElementById("lengthValue").innerText = this.value;
 }
 
 document.getElementById("length").oninput = function() {
   document.getElementById("passwordLength").value = this.value;
-  document.getElementById("lengthValue").innerText = this.value;
 }
 
 function generatePassword() {
