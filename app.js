@@ -1,14 +1,14 @@
-document.getElementById("passwordLength").oninput = function() {
-  document.getElementById("length").value = this.value;
-}
+document.getElementById("passwordLength").oninput = function(event) {
+  document.getElementById("length").value = event.target.value;
+};
 
-document.getElementById("length").oninput = function() {
-  document.getElementById("passwordLength").value = this.value;
-}
+document.getElementById("length").oninput = function(event) {
+  document.getElementById("passwordLength").value = event.target.value;
+};
 
 function generatePassword() {
   var lengthInput = document.getElementById("length");
-  var length = +(lengthInput.value);
+  var length = parseInt(lengthInput.value, 10);
 
   if (length > 100) {
     alert("Password length cannot exceed 100 characters.");
@@ -34,20 +34,28 @@ function generatePassword() {
   var symbols = "!@#$%^&*()_+-=[]{}|;:',.<>/?";
 
   var characters = "";
-  if (includeUppercase) characters += upper;
-  if (includeLowercase) characters += lower;
-  if (includeNumbers) characters += numbers;
-  if (includeSymbols) characters += symbols;
+  if (includeUppercase) {
+    characters = characters + upper;
+  }
+  if (includeLowercase) {
+    characters = characters + lower;
+  }
+  if (includeNumbers) {
+    characters = characters + numbers;
+  }
+  if (includeSymbols) {
+    characters = characters + symbols;
+  }
 
   if (characters === "") {
-    document.getElementById("result").innerText = "❗ Select at least one character type.";
+    document.getElementById("result").innerText = "Select at least one character type.";
     return;
   }
 
   var password = "";
   for (var i = 0; i < length; i++) {
     var randomIndex = Math.floor(Math.random() * characters.length);
-    password += characters[randomIndex];
+    password = password + characters.charAt(randomIndex);
   }
 
   document.getElementById("result").innerText = password;
@@ -55,21 +63,26 @@ function generatePassword() {
 
 function copyToClipboard() {
   var password = document.getElementById("result").innerText;
-  if (!password || password.includes("❗") || password === "Your password will appear here") {
-    return alert("Nothing to copy!");
+
+  var isEmpty = password === "" || password == null;
+  var isInvalid = password.indexOf("Select at least one character type.") !== -1 || password === "Your password will appear here";
+
+  if (isEmpty || isInvalid) {
+    alert("Nothing to copy!");
+    return;
   }
 
   navigator.clipboard.writeText(password)
-    .then(() => {
-      alert("✅ Password copied to clipboard!");
+    .then(function() {
+      alert("Password copied to clipboard!");
     })
-    .catch(err => {
+    .catch(function(err) {
       console.error("Failed to copy: ", err);
     });
 }
 
-document.getElementById("length").addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        generatePassword();
-    }
+document.getElementById("length").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    generatePassword();
+  }
 });
